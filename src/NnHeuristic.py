@@ -16,41 +16,42 @@ tf.compat.v1.keras.backend.set_session(session)
 
 
 def games_to_inputs(games: GameState):
-    return np.array([game.state() for game in games])
+    return [game.state() for game in games]
 
 
 class NnHeuristic(Heuristic):
 
-    def __init__(self, path, input_shape = None):
+    def __init__(self, path, model):
         self.model_path = path
         try:
             self.model = keras.models.load_model(path)
         except OSError:
-            print("No model found for path: " + path)
-            print("Initializing new model")
-            self.model = keras.Sequential([
-                keras.layers.Flatten(input_shape=input_shape),
-                keras.layers.Dense(1024, activation='relu'),
-                keras.layers.Dense(1024, activation='relu'),
-                keras.layers.Dense(1024, activation='relu'),
-                keras.layers.Dense(1)
-            ])
+            self.model = model()
 
-            self.model.compile(optimizer='adam',
-                               loss='mean_squared_error',
-                               metrics=['accuracy'])
+            # print("No model found for path: " + path)
+            # print("Initializing new model")
+            # self.model = keras.Sequential([
+            #     keras.layers.Flatten(input_shape=input_shape),
+            #     keras.layers.Dense(1024, activation='relu'),
+            #     keras.layers.Dense(1024, activation='relu'),
+            #     keras.layers.Dense(1024, activation='relu'),
+            #     keras.layers.Dense(1)
+            # ])
+            #
+            # self.model.compile(optimizer='adam',
+            #                    loss='mean_squared_error',
+            #                    metrics=['accuracy'])
 
     # game_states: numpy array of inputs
-    def hs(self, games: np.ndarray):
+    def hs(self, games):
         # predictions = self.probability_model.predict(game_states)
         # predictions = self.model.predict(game_states)
         inputs = games_to_inputs(games)
-        predictions = self.model(inputs)
-        return np.array(predictions)
+        return self.model(inputs)
 
     # game_states: numpy array of inputs
     def h(self, game: GameState):
-        return self.hs(np.array([game]))
+        return self.hs([game])
 
     def h_batch(self, game_states: np.ndarray):
         predictions = self.model.predict(game_states)

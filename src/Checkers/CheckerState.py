@@ -1,4 +1,10 @@
+import random
 from copy import deepcopy, copy
+
+from tensorflow import keras
+import tensorflow as tf
+from tensorflow.python.keras import Input, Model
+from tensorflow.python.keras.layers import Dense, concatenate, Conv2D
 
 from src.Checkers.Checkers.game import Game
 from src.GameState import GameState
@@ -6,10 +12,11 @@ import numpy as np
 
 
 class CheckerState(GameState):
-    # TODO
-    input_size: int = 8 * 8 * 12 + 1
-    nb_pieces: int = 12
-    max_moves_per_game: int = 75
+    # 1 pour le tour 1 pour le nombre de piece rouge et 1 pour le nombre de piece noir
+    input_shape_features = (3,)  # (3,)
+
+    # 8 slot pour les rouge, 8 pour les noirs, pour chaque, on a (normal, roi, pos x, pos y)
+    input_shape_board = (8, 2, 4)
 
     def __init__(self, board=None):
         if board is None:
@@ -31,7 +38,8 @@ class CheckerState(GameState):
 
     # TODO
     def pop(self):
-        pass
+        moves = self.board.moves
+        return moves[len(moves) - 1]
 
     def history(self):
         history = []
@@ -45,18 +53,6 @@ class CheckerState(GameState):
 
     def turn(self) -> bool:
         return self.board.whose_turn() == 1
-
-    # TODO
-    def state(self):
-        a = np.zeros(self.input_size, dtype=float)
-        a[0] = 0 if self.turn() else 1
-        for i in range(0, 8 * 8):
-            p = self.board.piece_at(i)
-            if p is not None:
-                idx: int = self._piece_to_idx(p) + 1 + i * self.nb_pieces
-                a[int(idx)] = 1
-
-        return a
 
     def game_over(self) -> bool:
         return self.board.is_over()
@@ -77,14 +73,10 @@ class CheckerState(GameState):
         return n
 
     def __hash__(self):
-        return hash(frozenset(self.board.move_stack))
+        return hash(frozenset(self.board.board.pieces))
 
     def __eq__(self, other):
-        return self.board.__eq__(other.board)
-
-    @staticmethod
-    def input_shape(self):
-        return (self.input_size,)
+        return self.board.board.pieces == other.board.board.pieces
 
     @staticmethod
     def random_board(nbr_moves=None):
@@ -97,3 +89,33 @@ class CheckerState(GameState):
         while board.winner() == 0:
             board = CheckerState.random_board()
         return board
+
+    def state(self):
+        a = np.zeros(CheckerState.input_shape_board, dtype=float)
+        b = np.zeros(CheckerState.input_shape_features, dtype=float)
+        return [a, b]
+
+    @staticmethod
+    def keras_model():
+        input_board = Input(shape=CheckerState.input_shape_board)
+        input_features = Input(shape=CheckerState.input_shape_features)
+
+        x = Conv2D(128, (1, 1), activation="relu")(input_board)
+        x = Model(inputs=input_board, outputs=x)
+
+        y = Dense(128, activation="relu")(input_features)
+        y = Model(inputs=input_features, outputs=y)
+
+        combined = concatenate([x.output, y.output])
+
+        z = Dense(128, activation="relu")(combined)
+        z = Dense(128, activation="relu")(z)
+        z = Dense(1, activation="relu")(z)
+
+        model = Model(inputs=[x.input, y.input], outputs=z)
+
+        model.compile(optimizer='adam',
+                      loss='mean_squared_error',
+                      metrics=['accuracy'])
+
+        return model

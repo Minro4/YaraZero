@@ -12,6 +12,12 @@ class Piece:
 		self.capture_move_enemies = {}
 		self.reset_for_new_board()
 
+	def __eq__(self, other):
+		return self.player == other.player and self.position == other.position
+
+	def __hash__(self):
+		return hash((self.position, self.player))
+
 	def reset_for_new_board(self):
 		self.possible_capture_moves = None
 		self.possible_positional_moves = None

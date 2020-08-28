@@ -1,12 +1,16 @@
 import time
 
 from src.Checkers.CheckerState import CheckerState
+from src.FirstLayerActionModel import FirstLayerActionModel
 from src.GamePlayer import GamePlayer
+from src.MCST import MCST
+from src.NnHeuristic import NnHeuristic
 from src.RandomActionModel import RandomActionModel
 
-# heuristic = NnHeuristic("./models/chercker_keras_model_1", CheckerState.input_shape())
-actionModel = RandomActionModel()  # FirstLayerActionModel(heuristic)
-player = GamePlayer(actionModel)
+heuristic = NnHeuristic("./models/chercker_keras_model_1", CheckerState.keras_model)
+actionModel1 = FirstLayerActionModel(heuristic) #MCST(10)
+actionModel2 = RandomActionModel()  # FirstLayerActionModel(heuristic)
+player = GamePlayer(actionModel1, actionModel2)
 
 white = 0
 black = 0
@@ -17,7 +21,7 @@ for i in range(100):
 
     start_time = time.time()
     game = CheckerState()
-    winner, states, hs = player.play(game)
+    winner, states, hs = player.play(game, True)
 
     if winner == 1:
         white += 1

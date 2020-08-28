@@ -1,3 +1,4 @@
+import time
 from abc import ABC
 from collections import defaultdict
 import math
@@ -130,4 +131,4 @@ class MCST(Heuristic, ActionModel, ABC):
 
     def h_score(self, game: GameState):
         s = self._score(game)
-        return (s * 2 - 1) * 1 if game.turn() else -1
+        return (s * 2 - 1) * (-1 if game.turn() else 1)
