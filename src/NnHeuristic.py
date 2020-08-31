@@ -1,3 +1,5 @@
+import random
+
 import tensorflow as tf
 from tensorflow import keras
 
@@ -28,26 +30,11 @@ class NnHeuristic(Heuristic):
         except OSError:
             self.model = model()
 
-            # print("No model found for path: " + path)
-            # print("Initializing new model")
-            # self.model = keras.Sequential([
-            #     keras.layers.Flatten(input_shape=input_shape),
-            #     keras.layers.Dense(1024, activation='relu'),
-            #     keras.layers.Dense(1024, activation='relu'),
-            #     keras.layers.Dense(1024, activation='relu'),
-            #     keras.layers.Dense(1)
-            # ])
-            #
-            # self.model.compile(optimizer='adam',
-            #                    loss='mean_squared_error',
-            #                    metrics=['accuracy'])
-
     # game_states: numpy array of inputs
     def hs(self, games):
-        # predictions = self.probability_model.predict(game_states)
-        # predictions = self.model.predict(game_states)
         inputs = games_to_inputs(games)
-        return self.model(inputs)
+        res = self.model(np.array(inputs))
+        return np.array(res)
 
     # game_states: numpy array of inputs
     def h(self, game: GameState):
@@ -58,14 +45,10 @@ class NnHeuristic(Heuristic):
         return np.array(predictions)
 
     # board, winning for white 0 if lost, 0.5 if draw, 1 if win
-    def train(self, states, results, epochs: int = 1):
-        x = np.array(states)
+    def train(self, games, results, epochs: int = 1):
+        x = np.array(games_to_inputs(games))
         y = np.array(results)
         self.model.fit(x=x, y=y, epochs=epochs)
-
-    # test_loss, test_acc = self.model.evaluate(x, y, verbose=2)
-    # print("loss: " + str(test_loss))
-    # print("acc: " + str(test_acc))
 
     def save(self):
         self.model.save(self.model_path)

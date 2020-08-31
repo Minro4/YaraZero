@@ -66,9 +66,7 @@ class GameState(ABC):
         pass
 
     def reward(self):
-        winner = self.winner()
-        winner *= 1 if self.turn() else -1
-        return (winner + 1) / 2
+        return self.winner()
 
     def nbr_epochs(self):
         return 1
@@ -99,3 +97,7 @@ class GameState(ABC):
             move = self.random_move()
             self.push(move)
         return self
+
+    @abstractmethod
+    def moves_str(self):
+        pass

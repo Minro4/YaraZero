@@ -5,15 +5,18 @@ from src.Chess import ChessValidation
 
 
 class Heuristic(ABC):
-    @abstractmethod
+
     def hs(self, games):
-        pass
+        a = np.zeros(len(games))
+        for idx, game in enumerate(games):
+            a[idx] = self.h(game)
+        return a
 
     @abstractmethod
     def h(self, game):
         pass
 
-    def test_path(self, path="Stockfish/tests.txt", verbose=0):
+    def test_path(self, path, verbose=0):
         tests = ChessValidation.load_tests(path)
         avg_loss = self.test(tests[0], tests[1], verbose=verbose > 1)
         if verbose > 0:

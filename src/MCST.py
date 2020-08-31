@@ -13,12 +13,13 @@ from src.Heuristic import Heuristic
 class MCST(Heuristic, ActionModel, ABC):
     "Monte Carlo tree searcher. First rollout the tree then choose a move."
 
-    def __init__(self, nbr_rollouts=50, exploration_weight=1):
+    def __init__(self, nbr_rollouts=50, exploration_weight=1, heuristic: Heuristic = None):
         self.Q = defaultdict(int)  # total reward of each node
         self.N = defaultdict(int)  # total visit count for each node
         self.children = dict()  # children of each node
         self.exploration_weight = exploration_weight
         self.nbr_rollouts = nbr_rollouts
+        self.heuristic = heuristic
 
     def h(self, game: GameState):
         if game.terminal():
@@ -28,14 +29,6 @@ class MCST(Heuristic, ActionModel, ABC):
             self.do_rollout(game)
 
         return self.h_score(self.choose(game))
-
-
-    def hs(self, games):
-        a = np.zeros(len(games))
-        for idx, game in enumerate(games):
-            a[idx] = self.h(game)
-            print("done: " + str(idx) + "/" + str(len(games)))
-        return a
 
     def action(self, game: GameState):
         for _ in range(self.nbr_rollouts):
@@ -67,7 +60,10 @@ class MCST(Heuristic, ActionModel, ABC):
         path = self._select(node)
         leaf = path[-1]
         self._expand(leaf)
-        reward = self._simulate(leaf.__copy__())
+        if self.heuristic is None:
+            reward = self._simulate(leaf.__copy__())
+        else:
+            reward = self.heuristic.h(node)
         self._backpropagate(path, reward)
 
     def _select(self, node: GameState):
@@ -131,4 +127,5 @@ class MCST(Heuristic, ActionModel, ABC):
 
     def h_score(self, game: GameState):
         s = self._score(game)
-        return (s * 2 - 1) * (-1 if game.turn() else 1)
+        return 1 - s if game.turn() else s
+        # return (s * 2 - 1) * (-1 if game.turn() else 1)

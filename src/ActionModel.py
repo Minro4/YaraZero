@@ -16,7 +16,7 @@ class ActionModel:
 
     def win_heuristic(self, games):
         for idx, game in enumerate(games):
-            if not game.winner() == 0:
+            if game.game_over():
                 return idx
         return -1
 

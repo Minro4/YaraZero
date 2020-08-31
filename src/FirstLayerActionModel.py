@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 
 from src.ActionModel import ActionModel
@@ -5,8 +7,9 @@ from src.GameState import GameState
 
 
 class FirstLayerActionModel(ActionModel):
-    def __init__(self, heuristic):
+    def __init__(self, heuristic, variance=False):
         self.heuristic = heuristic
+        self.variance = variance
 
     def action(self, game: GameState):
         if game.game_over():
@@ -20,12 +23,27 @@ class FirstLayerActionModel(ActionModel):
             return possibleMoves[win_h], 1
 
         evals = self.heuristic.hs(boards)
-
         evals = self.default_heuristic(boards, evals)
-        if game.turn():
-            bestIdx = np.argmax(evals)
+
+        if self.variance:
+            if not game.turn():
+                evals = [1 - e for e in evals]
+            total = sum(evals)
+            evals = [e / total for e in evals]
+            choice = random.random()
+            s = 0
+            for idx, e in enumerate(evals):
+                s += e
+                if choice <= s:
+                    bestIdx = idx
+                    break
+
         else:
-            bestIdx = np.argmin(evals)
+            if game.turn():
+                bestIdx = np.argmax(evals)
+            else:
+                bestIdx = np.argmin(evals)
+
         bestMove = possibleMoves[bestIdx]
 
         return bestMove, evals[bestIdx]
