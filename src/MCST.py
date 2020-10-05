@@ -21,6 +21,10 @@ class MCST(Heuristic, ActionModel, ABC):
         self.nbr_rollouts = nbr_rollouts
         self.heuristic = heuristic
 
+    @staticmethod
+    def from_json(heuristic, json):
+        return MCST(json['nbr_rollouts'], json['exploration_weight'], heuristic)
+
     def h(self, game: GameState):
         if game.terminal():
             return game.winner()

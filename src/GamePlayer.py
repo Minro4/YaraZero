@@ -3,7 +3,7 @@ from src.GameState import GameState
 
 
 class GamePlayer:
-    def __init__(self, action_model1: ActionModel, action_model2: ActionModel = None, alternate = False):
+    def __init__(self, action_model1: ActionModel, action_model2: ActionModel = None, alternate=False):
         self.actionModel1 = action_model1
         if action_model2 is None:
             action_model2 = action_model1

@@ -3,6 +3,10 @@ from src.GameState import GameState
 
 
 class HumanActionModel(ActionModel):
+    @staticmethod
+    def from_json():
+        return HumanActionModel()
+
     def action(self, game: GameState):
         print(game.__str__())
         moves = game.legal_moves()
