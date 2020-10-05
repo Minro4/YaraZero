@@ -1,0 +1,20 @@
+{
+  "game": "checkers",
+  "alternateColors": false,
+  "train": {
+    "model": "./Checkers/models/chercker_keras_model_3",
+    "gamesPerTrain": 10
+  },
+  "actionModels": [
+    {
+      "name": "FirstLayer",
+      "params": {
+        "variance": true,
+        "model": "./Checkers/models/chercker_keras_model_3"
+      }
+    },
+    {
+      "name": "Random"
+    }
+  ]
+}

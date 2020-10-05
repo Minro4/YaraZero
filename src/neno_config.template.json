@@ -1,0 +1,41 @@
+{
+  "game": "checkers|chess",
+  "alternateColors": "bool",
+  "verbose": "bool",
+  "train": {
+    "model": "path",
+    "gamesPerTrain": "int"
+  },
+  "actionModels": [
+    {
+      "name": "FirstLayer",
+      "params": {
+        "variance": "bool",
+        "model": "path"
+      }
+    },
+    {
+      "name": "MiniMax",
+      "params": {
+        "depth": "int",
+        "model": "path"
+      }
+    },
+    {
+      "name": "MCST",
+      "params": {
+        "nbr_rollouts": "int",
+        "exploration_weight": "int",
+        "model": "path"
+      }
+    },
+    {
+      "name": "Human",
+      "params": {
+      }
+    },
+    {
+      "name": "Random"
+    }
+  ]
+}

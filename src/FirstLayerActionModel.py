@@ -11,6 +11,10 @@ class FirstLayerActionModel(ActionModel):
         self.heuristic = heuristic
         self.variance = variance
 
+    @staticmethod
+    def from_json(heuristic, json):
+        return FirstLayerActionModel(heuristic, json['variance'])
+
     def action(self, game: GameState):
         if game.game_over():
             return None
