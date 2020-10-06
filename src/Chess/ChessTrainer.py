@@ -3,9 +3,9 @@ from src.Chess.ChessState import ChessState
 from src.Chess.ChessValidation import generate_winning_training_set, \
     save_tests
 from src.GamePlayer import GamePlayer
-from src.MCST import MCST
+from src.ActionModels.MCST import MCST
 # from NnHeuristic import NnHeuristic
-from src.RandomActionModel import RandomActionModel
+from src.ActionModels.RandomActionModel import RandomActionModel
 import numpy as np
 
 mate_in_1_training = "training_data/winning_positions.txt"

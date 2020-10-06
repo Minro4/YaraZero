@@ -1,4 +1,4 @@
-from src.ActionModel import ActionModel
+from src.ActionModels.ActionModel import ActionModel
 from src.GameState import GameState
 
 

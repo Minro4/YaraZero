@@ -1,11 +1,10 @@
 from copy import copy
 
-from src.Checkers.CheckerState import CheckerState
-from src.FirstLayerActionModel import FirstLayerActionModel
+from src.ActionModels.FirstLayerActionModel import FirstLayerActionModel
 from src.GamePlayer import GamePlayer
-from src.HumanActionModel import HumanActionModel
+from src.ActionModels.HumanActionModel import HumanActionModel
 from src.NnHeuristic import NnHeuristic
-from src.RandomActionModel import RandomActionModel
+from src.ActionModels.RandomActionModel import RandomActionModel
 from src.WinCounter import WinCounter
 
 
