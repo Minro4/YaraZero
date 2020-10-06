@@ -1,5 +1,5 @@
 from src import GameState
-from src.ActionModel import ActionModel
+from src.ActionModels.ActionModel import ActionModel
 from src.Heuristic import Heuristic
 
 

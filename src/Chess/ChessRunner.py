@@ -1,7 +1,7 @@
 import time
 from src.Chess.ChessState import ChessState
 from src.Chess import ChessValidation
-from src.FirstLayerActionModel import FirstLayerActionModel
+from src.ActionModels.FirstLayerActionModel import FirstLayerActionModel
 from src.GamePlayer import GamePlayer
 from src.NnHeuristic import NnHeuristic
 
