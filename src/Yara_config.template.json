@@ -30,9 +30,7 @@
       }
     },
     {
-      "name": "Human",
-      "params": {
-      }
+      "name": "Human"
     },
     {
       "name": "Random"
