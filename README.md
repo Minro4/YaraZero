@@ -6,7 +6,7 @@ She currently uses a neural network as a heuristic to evaluate the quality of a 
 While Yara is currently able to learn and play simple games like checkers really well, more complex games like chess would greatly benefit from an improved neural network model that would recommend the best actions for a given state to enhance the quality of her tree traversal.
 
 ### Getting Started
-`Yara.py <path_to_config.json>` see [template](./Yara_config.template.json)
+`Yara.py <path_to_config.json>` see [template](./src/Yara_config.template.json)
 
 #### Train (optional)  
    * model: Path to the model to be trained  
